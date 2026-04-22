@@ -198,8 +198,8 @@ function App() {
       {toast && <div style={styles.toast}>{toast}</div>}
 
       <div style={styles.glassCard}>
-        <h2 style={{ textAlign: "center" }}>
-          CARBON<span style={{ fontWeight: "700" }}>EX</span>
+        <h2 style={{ textAlign: "center", fontWeight: "300", letterSpacing: "1px", marginBottom: "30px" }}>
+          CRYPTO<span style={{ fontWeight: "700" }}>LEDGER</span>
         </h2>
 
         <div style={styles.tabContainer}>
