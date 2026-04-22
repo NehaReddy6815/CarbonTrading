@@ -4,11 +4,6 @@ const express = require("express");
 const crypto = require("crypto");
 const cors = require("cors");
 
-// ❗ keep DB disabled for now
-// const Trade = require("./models/Trade");
-// const connectDB = require("./db");
-// connectDB();
-
 const { createTransaction, verifyHashOnChain } = require("./stellar");
 
 const app = express();
@@ -16,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ❗ In-memory storage (temporary instead of DB)
+// ✅ In-memory storage (temporary)
 let tradeHistory = [];
 
 // Health check
@@ -37,7 +32,6 @@ app.post("/trade", async (req, res) => {
   try {
     const { buyer, seller, credits } = req.body;
 
-    // ✅ Validation
     if (!buyer || !seller || !credits) {
       return res.status(400).json({ error: "Invalid data" });
     }
@@ -56,24 +50,7 @@ app.post("/trade", async (req, res) => {
       return res.status(500).json({ error: "Stellar transaction failed" });
     }
 
-    // ❗ DB disabled (optional)
-    /*
-    try {
-      const newTrade = new Trade({
-        buyer,
-        seller,
-        credits,
-        hash,
-        transactionId: txId,
-      });
-
-      await newTrade.save();
-    } catch (dbError) {
-      console.log("DB save skipped:", dbError.message);
-    }
-    */
-
-    // ✅ STORE IN MEMORY
+    // 3. Store in memory
     tradeHistory.push({
       buyer,
       seller,
@@ -82,7 +59,7 @@ app.post("/trade", async (req, res) => {
       transactionId: txId,
     });
 
-    // 3. Send response
+    // 4. Send response
     res.json({
       success: true,
       hash,
@@ -117,7 +94,7 @@ app.post("/verify", async (req, res) => {
   }
 });
 
-// 🔹 HISTORY API
+// 🔹 HISTORY API (clean version)
 app.get("/history", (req, res) => {
   res.json({
     success: true,
@@ -125,7 +102,7 @@ app.get("/history", (req, res) => {
   });
 });
 
-// Start server
+// ✅ SINGLE SERVER START
 app.listen(5001, () => {
   console.log("Server running on port 5001");
 });
